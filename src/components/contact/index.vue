@@ -1,5 +1,7 @@
 <template>
-    <form>
+    <form
+      @submit="checkForm"
+    >
       <div class="row">
         <div class="col-xl-12">
           <h1>Contact us</h1>
@@ -86,13 +88,25 @@
                   </label>
               </div>
           </div>
+
+          <hr/>
+
+          <p v-if="errors.length">
+            <b>oops, fix the error</b>
+            <ul>
+              <li v-for="error in errors" :key="error">
+                {{ error }}
+              </li>
+            </ul>
+          </p>
+
             
             <button
                 class="btn btn-primary"
-                @click.prevent="submitForm"
             >
             Submit
             </button>
+            
   
          
         </div>
@@ -103,14 +117,33 @@
 <script setup>
   import { reactive } from 'vue'
 
+  const errors = reactive([]);
   const formData = reactive({
-    name:'Francis',
+    name:'',
     email:'',
     subject:'',
     message:'',
     extras:[],
     gender:'alien'
   });
+  
+  const checkForm = (e) => {
+    e.preventDefault();
+    errors.splice(0); // reset array back to []
+
+    if(!formData.name){
+      errors.push('Sorry, the name is required')
+    }
+
+    if(!formData.email){
+      errors.push('Sorry, the email is required')
+    }
+
+    if(!errors.length){
+      submitForm()
+    }
+  }
+
 
   const submitForm = () => {
     console.log(formData)
